@@ -8,7 +8,7 @@ public class PersonalTrainingSession
     /// <summary>
     /// Уникальный id
     /// </summary>
-    public required int Id { get; set; }
+    public required int Id {get; set; }
 
     /// <summary>
     /// Клиент персональной тренировки
@@ -21,17 +21,17 @@ public class PersonalTrainingSession
     public required Trainer Trainer {get; set; }
 
     /// <summary>
-    /// Дата персональной тренировки
+    /// Дата и время персональной тренировки
     /// </summary> 
-    public required DateOnly TrainDay {get;set; }
+    public required DateTime TrainDay {get;set; }
 
     /// <summary>
     /// Название зала
     /// </summary>
-    public required string HallName { get; set; }
+    public required string HallName {get; set; }
 
     /// <summary>
     /// Является ли занятие пробным
     /// </summary>
-    public required bool IsTrial { get; set; }
+    public required bool IsTrial {get; set; }
 }
