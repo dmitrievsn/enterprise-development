@@ -8,7 +8,7 @@ namespace FitnessClub.Domain.Data;
 /// </summary>
 public static class FitnessClubData
 {
-    private static readonly DateOnly _today =
+    private static readonly DateOnly Today =
         DateOnly.FromDateTime(DateTime.Today);
 
     /// <summary>
@@ -83,8 +83,8 @@ public static class FitnessClubData
             Gender = Gender.Male,
             DateOfBirth = new DateOnly(2000, 1, 10),
             PhoneNumber = "+79000000001",
-            StartSub = _today.AddMonths(-12),
-            EndSub = _today.AddMonths(-1)
+            StartSub = Today.AddMonths(-12),
+            EndSub = Today.AddMonths(-1)
         },
         new Client
         {
@@ -96,8 +96,8 @@ public static class FitnessClubData
             Gender = Gender.Male,
             DateOfBirth = new DateOnly(1999, 2, 15),
             PhoneNumber = "+79000000002",
-            StartSub = _today.AddMonths(-8),
-            EndSub = _today.AddDays(-10)
+            StartSub = Today.AddMonths(-8),
+            EndSub = Today.AddDays(-10)
         },
         new Client
         {
@@ -109,8 +109,8 @@ public static class FitnessClubData
             Gender = Gender.Female,
             DateOfBirth = new DateOnly(2001, 3, 20),
             PhoneNumber = "+79000000003",
-            StartSub = _today.AddMonths(-6),
-            EndSub = _today.AddDays(-5)
+            StartSub = Today.AddMonths(-6),
+            EndSub = Today.AddDays(-5)
         },
         new Client
         {
@@ -122,8 +122,8 @@ public static class FitnessClubData
             Gender = Gender.Male,
             DateOfBirth = new DateOnly(1998, 4, 25),
             PhoneNumber = "+79000000004",
-            StartSub = _today.AddMonths(-4),
-            EndSub = _today.AddDays(-1)
+            StartSub = Today.AddMonths(-4),
+            EndSub = Today.AddDays(-1)
         },
         new Client
         {
@@ -135,8 +135,8 @@ public static class FitnessClubData
             Gender = Gender.Male,
             DateOfBirth = new DateOnly(2002, 5, 5),
             PhoneNumber = "+79000000005",
-            StartSub = _today.AddMonths(-2),
-            EndSub = _today.AddMonths(4)
+            StartSub = Today.AddMonths(-2),
+            EndSub = Today.AddMonths(4)
         },
         new Client
         {
@@ -148,8 +148,8 @@ public static class FitnessClubData
             Gender = Gender.Male,
             DateOfBirth = new DateOnly(1997, 6, 12),
             PhoneNumber = "+79000000006",
-            StartSub = _today.AddMonths(-1),
-            EndSub = _today.AddMonths(5)
+            StartSub = Today.AddMonths(-1),
+            EndSub = Today.AddMonths(5)
         },
         new Client
         {
@@ -161,8 +161,8 @@ public static class FitnessClubData
             Gender = Gender.Female,
             DateOfBirth = new DateOnly(2000, 7, 18),
             PhoneNumber = "+79000000007",
-            StartSub = _today.AddMonths(-3),
-            EndSub = _today.AddMonths(3)
+            StartSub = Today.AddMonths(-3),
+            EndSub = Today.AddMonths(3)
         },
         new Client
         {
@@ -174,8 +174,8 @@ public static class FitnessClubData
             Gender = Gender.Male,
             DateOfBirth = new DateOnly(2003, 8, 23),
             PhoneNumber = "+79000000008",
-            StartSub = _today.AddMonths(-2),
-            EndSub = _today.AddMonths(2)
+            StartSub = Today.AddMonths(-2),
+            EndSub = Today.AddMonths(2)
         },
         new Client
         {
@@ -187,8 +187,8 @@ public static class FitnessClubData
             Gender = Gender.Female,
             DateOfBirth = new DateOnly(1996, 9, 30),
             PhoneNumber = "+79000000009",
-            StartSub = _today.AddMonths(-1),
-            EndSub = _today.AddMonths(8)
+            StartSub = Today.AddMonths(-1),
+            EndSub = Today.AddMonths(8)
         },
         new Client
         {
@@ -200,8 +200,8 @@ public static class FitnessClubData
             Gender = Gender.Male,
             DateOfBirth = new DateOnly(2001, 10, 8),
             PhoneNumber = "+79000000010",
-            StartSub = _today,
-            EndSub = _today.AddMonths(6)
+            StartSub = Today,
+            EndSub = Today.AddMonths(6)
         }
     ];
 
