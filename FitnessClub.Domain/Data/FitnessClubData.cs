@@ -6,7 +6,7 @@ namespace FitnessClub.Domain.Data;
 /// <summary>
 /// Тестовые данные фитнес-клуба
 /// </summary>
-public static class FitnessClubTestData
+public static class FitnessClubData
 {
     private static readonly DateOnly _today =
         DateOnly.FromDateTime(DateTime.Today);

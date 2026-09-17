@@ -13,7 +13,7 @@ public class QueriesTests
     [Fact]
     public void GetTrainersWithFiveOrMoreYearsOfExperience()
     {
-        var result = FitnessClubTestData.Trainers
+        var result = FitnessClubData.Trainers
             .Where(trainer => trainer.WorkYears >= 5)
             .ToList();
         Assert.Equal(8, result.Count);
@@ -25,9 +25,9 @@ public class QueriesTests
     public void CheckHallAvailability()
     {
         var hallName = "Зал 1";
-        var checkTime = FitnessClubTestData.PersonalTrainingSessions[0].TrainDay;
+        var checkTime = FitnessClubData.PersonalTrainingSessions[0].TrainDay;
 
-        var isAvailable = !FitnessClubTestData.PersonalTrainingSessions
+        var isAvailable = !FitnessClubData.PersonalTrainingSessions
             .Any(session =>
                 session.HallName == hallName &&
                 session.TrainDay == checkTime);
@@ -42,7 +42,7 @@ public class QueriesTests
     {
         var today = DateOnly.FromDateTime(DateTime.Today);
 
-        var result = FitnessClubTestData.Clients
+        var result = FitnessClubData.Clients
             .Where(client => client.EndSub < today)
             .OrderBy(client => client.LastName)
             .ThenBy(client => client.FirstName)
@@ -60,7 +60,7 @@ public class QueriesTests
         var hallName = "Зал 1";
         var today = DateTime.Today;
 
-        var result = FitnessClubTestData.PersonalTrainingSessions
+        var result = FitnessClubData.PersonalTrainingSessions
             .Where(session =>
                 session.HallName == hallName &&
                 session.TrainDay.Year == today.Year &&
@@ -75,7 +75,7 @@ public class QueriesTests
     [Fact]
     public void GetTopFivePopularTrainers()
     {
-        var result = FitnessClubTestData.PersonalTrainingSessions
+        var result = FitnessClubData.PersonalTrainingSessions
             .GroupBy(session => session.Trainer.Id)
             .OrderByDescending(group => group.Count())
             .Take(5)
@@ -83,7 +83,7 @@ public class QueriesTests
             .ToList();
 
         var trainers = result
-            .Select(id => FitnessClubTestData.Trainers
+            .Select(id => FitnessClubData.Trainers
                 .First(trainer => trainer.Id == id))
             .ToList();
 
