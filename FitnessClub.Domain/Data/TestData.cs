@@ -1,13 +1,19 @@
 using FitnessClub.Domain.Entities;
-using FitnessClub.Domain.Enums;
+using FitnessClub.Domain.Shared.Enums;
 
-namespace FitnessClub.Tests;
+namespace FitnessClub.Domain.Data;
 
+/// <summary>
+/// Тестовые данные фитнес-клуба
+/// </summary>
 public static class FitnessClubTestData
 {
     private static readonly DateOnly _today =
         DateOnly.FromDateTime(DateTime.Today);
 
+    /// <summary>
+    /// Список специализаций тренеров
+    /// </summary>
     public static List<Specialization> Specializations { get; } =
     [
         new Specialization
@@ -62,6 +68,9 @@ public static class FitnessClubTestData
         }
     ];
 
+    /// <summary>
+    /// Список клиентов
+    /// </summary>
     public static List<Client> Clients { get; } =
     [
         new Client
@@ -70,7 +79,7 @@ public static class FitnessClubTestData
             PassportNumber = "1111111111",
             LastName = "Иванов",
             FirstName = "Иван",
-            SecondName = "Иванович",
+            Patronymic = "Иванович",
             Gender = Gender.Male,
             DateOfBirth = new DateOnly(2000, 1, 10),
             PhoneNumber = "+79000000001",
@@ -83,7 +92,7 @@ public static class FitnessClubTestData
             PassportNumber = "2222222222",
             LastName = "Петров",
             FirstName = "Петр",
-            SecondName = "Петрович",
+            Patronymic = "Петрович",
             Gender = Gender.Male,
             DateOfBirth = new DateOnly(1999, 2, 15),
             PhoneNumber = "+79000000002",
@@ -96,7 +105,7 @@ public static class FitnessClubTestData
             PassportNumber = "3333333333",
             LastName = "Монголова",
             FirstName = "Анна",
-            SecondName = "Олеговна",
+            Patronymic = "Олеговна",
             Gender = Gender.Female,
             DateOfBirth = new DateOnly(2001, 3, 20),
             PhoneNumber = "+79000000003",
@@ -109,7 +118,7 @@ public static class FitnessClubTestData
             PassportNumber = "4444444444",
             LastName = "Пупкин",
             FirstName = "Василий",
-            SecondName = "Павлович",
+            Patronymic = "Павлович",
             Gender = Gender.Male,
             DateOfBirth = new DateOnly(1998, 4, 25),
             PhoneNumber = "+79000000004",
@@ -122,7 +131,7 @@ public static class FitnessClubTestData
             PassportNumber = "5555555555",
             LastName = "Заплуткин",
             FirstName = "Дмитрий",
-            SecondName = null,
+            Patronymic = null,
             Gender = Gender.Male,
             DateOfBirth = new DateOnly(2002, 5, 5),
             PhoneNumber = "+79000000005",
@@ -135,7 +144,7 @@ public static class FitnessClubTestData
             PassportNumber = "6666666666",
             LastName = "Черноголовкин",
             FirstName = "Дмитрий",
-            SecondName = "Андреевич",
+            Patronymic = "Андреевич",
             Gender = Gender.Male,
             DateOfBirth = new DateOnly(1997, 6, 12),
             PhoneNumber = "+79000000006",
@@ -148,7 +157,7 @@ public static class FitnessClubTestData
             PassportNumber = "7777777777",
             LastName = "Волкова",
             FirstName = "Елена",
-            SecondName = "Игоревна",
+            Patronymic = "Игоревна",
             Gender = Gender.Female,
             DateOfBirth = new DateOnly(2000, 7, 18),
             PhoneNumber = "+79000000007",
@@ -161,7 +170,7 @@ public static class FitnessClubTestData
             PassportNumber = "8888888888",
             LastName = "Соколов",
             FirstName = "Максим",
-            SecondName = "Алексеевич",
+            Patronymic = "Алексеевич",
             Gender = Gender.Male,
             DateOfBirth = new DateOnly(2003, 8, 23),
             PhoneNumber = "+79000000008",
@@ -174,7 +183,7 @@ public static class FitnessClubTestData
             PassportNumber = "9999999999",
             LastName = "Морозова",
             FirstName = "Ольга",
-            SecondName = "Викторовна",
+            Patronymic = "Викторовна",
             Gender = Gender.Female,
             DateOfBirth = new DateOnly(1996, 9, 30),
             PhoneNumber = "+79000000009",
@@ -187,7 +196,7 @@ public static class FitnessClubTestData
             PassportNumber = "1010101010",
             LastName = "Лебедев",
             FirstName = "Артем",
-            SecondName = null,
+            Patronymic = null,
             Gender = Gender.Male,
             DateOfBirth = new DateOnly(2001, 10, 8),
             PhoneNumber = "+79000000010",
@@ -196,6 +205,9 @@ public static class FitnessClubTestData
         }
     ];
 
+    /// <summary>
+    /// Список тренеров
+    /// </summary>
     public static List<Trainer> Trainers { get; } =
     [
         new Trainer
@@ -204,7 +216,7 @@ public static class FitnessClubTestData
             PassportNumber = "2000000001",
             LastName = "Орлов",
             FirstName = "Александр",
-            SecondName = "Игоревич",
+            Patronymic = "Игоревич",
             Gender = Gender.Male,
             DateOfBirth = new DateOnly(1990, 1, 15),
             Specialization = Specializations[0],
@@ -216,7 +228,7 @@ public static class FitnessClubTestData
             PassportNumber = "2000000002",
             LastName = "Федоров",
             FirstName = "Михаил",
-            SecondName = "Сергеевич",
+            Patronymic = "Сергеевич",
             Gender = Gender.Male,
             DateOfBirth = new DateOnly(1988, 2, 20),
             Specialization = Specializations[1],
@@ -228,7 +240,7 @@ public static class FitnessClubTestData
             PassportNumber = "2000000003",
             LastName = "Крылова",
             FirstName = "Анна",
-            SecondName = "Олеговна",
+            Patronymic = "Олеговна",
             Gender = Gender.Female,
             DateOfBirth = new DateOnly(1994, 3, 10),
             Specialization = Specializations[2],
@@ -240,7 +252,7 @@ public static class FitnessClubTestData
             PassportNumber = "2000000004",
             LastName = "Семенов",
             FirstName = "Илья",
-            SecondName = "Павлович",
+            Patronymic = "Павлович",
             Gender = Gender.Male,
             DateOfBirth = new DateOnly(1989, 4, 5),
             Specialization = Specializations[3],
@@ -252,7 +264,7 @@ public static class FitnessClubTestData
             PassportNumber = "2000000005",
             LastName = "Белова",
             FirstName = "Елена",
-            SecondName = "Андреевна",
+            Patronymic = "Андреевна",
             Gender = Gender.Female,
             DateOfBirth = new DateOnly(1992, 5, 18),
             Specialization = Specializations[4],
@@ -264,7 +276,7 @@ public static class FitnessClubTestData
             PassportNumber = "2000000006",
             LastName = "Макаров",
             FirstName = "Денис",
-            SecondName = "Викторович",
+            Patronymic = "Викторович",
             Gender = Gender.Male,
             DateOfBirth = new DateOnly(1987, 6, 25),
             Specialization = Specializations[5],
@@ -276,7 +288,7 @@ public static class FitnessClubTestData
             PassportNumber = "2000000007",
             LastName = "Зайцева",
             FirstName = "Мария",
-            SecondName = "Ивановна",
+            Patronymic = "Ивановна",
             Gender = Gender.Female,
             DateOfBirth = new DateOnly(1993, 7, 12),
             Specialization = Specializations[6],
@@ -288,7 +300,7 @@ public static class FitnessClubTestData
             PassportNumber = "2000000008",
             LastName = "Власов",
             FirstName = "Роман",
-            SecondName = "Алексеевич",
+            Patronymic = "Алексеевич",
             Gender = Gender.Male,
             DateOfBirth = new DateOnly(1986, 8, 30),
             Specialization = Specializations[7],
@@ -300,7 +312,7 @@ public static class FitnessClubTestData
             PassportNumber = "2000000009",
             LastName = "Никитина",
             FirstName = "Ольга",
-            SecondName = "Сергеевна",
+            Patronymic = "Сергеевна",
             Gender = Gender.Female,
             DateOfBirth = new DateOnly(1991, 9, 14),
             Specialization = Specializations[8],
@@ -312,7 +324,7 @@ public static class FitnessClubTestData
             PassportNumber = "2000000010",
             LastName = "Громов",
             FirstName = "Артем",
-            SecondName = null,
+            Patronymic = null,
             Gender = Gender.Male,
             DateOfBirth = new DateOnly(1985, 10, 7),
             Specialization = Specializations[9],
@@ -320,6 +332,9 @@ public static class FitnessClubTestData
         }
     ];
 
+    /// <summary>
+    /// Список персональных тренеровок
+    /// </summary>
     public static List<PersonalTrainingSession> PersonalTrainingSessions { get; } =
     [
         new()

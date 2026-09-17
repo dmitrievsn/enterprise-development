@@ -1,5 +1,10 @@
 namespace FitnessClub.Tests;
 
+using FitnessClub.Domain.Data;
+
+/// <summary>
+/// Юнит-тесты для фитнес-клуба
+/// </summary>
 public class QueriesTests
 {
     /// <summary>
@@ -41,7 +46,7 @@ public class QueriesTests
             .Where(client => client.EndSub < today)
             .OrderBy(client => client.LastName)
             .ThenBy(client => client.FirstName)
-            .ThenBy(client => client.SecondName)
+            .ThenBy(client => client.Patronymic)
             .ToList();
 
         Assert.Equal(4, result.Count);
