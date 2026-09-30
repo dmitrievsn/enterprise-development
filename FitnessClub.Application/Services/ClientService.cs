@@ -1,5 +1,7 @@
-using FitnessClub.Application.Contracts;
 using FitnessClub.Application.Contracts.Clients;
+using FitnessClub.Application.Contracts.PersonalTrainingSessions;
+using FitnessClub.Application.Contracts.Trainers;
+using FitnessClub.Application.Contracts.Specializations;
 using FitnessClub.Domain.Data;
 using FitnessClub.Domain.Entities;
 using Microsoft.Extensions.Logging;
@@ -10,10 +12,7 @@ namespace FitnessClub.Application.Services;
 /// Cервис для работы с клиентами
 /// </summary>
 public class ClientService(ILogger<ClientService> logger):
-    IApplicationService<
-    ClientDto,
-    ClientCreateUpdateDto,
-    int>
+    IClientService
 {
     public Task<ClientDto> Create(ClientCreateUpdateDto dto)
     {
@@ -178,5 +177,56 @@ public class ClientService(ILogger<ClientService> logger):
         logger.LogInformation("Клиент с Id: {Id} удален",id);
 
         return Task.FromResult(true);
+    }
+
+    public Task<IList<PersonalTrainingSessionDto>> GetPersonalTrainingSessions(int id)
+    {
+        logger.LogInformation("Получение персональных тренировок клиента с Id: {Id}",id);
+
+        var client = FitnessClubData.Clients.FirstOrDefault(x => x.Id==id);
+
+        if (client is null)
+        {
+            logger.LogWarning("Клиент c Id: {Id} не найден",id);
+
+            throw new KeyNotFoundException($"Клиент с Id: {id} не найден");
+        }
+
+        IList<PersonalTrainingSessionDto> result = FitnessClubData.PersonalTrainingSessions.Where(p => p.Client.Id==id)
+            .Select(p =>new PersonalTrainingSessionDto
+            (
+                p.Id,
+                new ClientDto(
+                    p.Client.Id,
+                    p.Client.PassportNumber,
+                    p.Client.LastName,
+                    p.Client.FirstName,
+                    p.Client.Patronymic,
+                    p.Client.Gender,
+                    p.Client.DateOfBirth,
+                    p.Client.PhoneNumber,
+                    p.Client.StartSub,
+                    p.Client.EndSub),
+                new TrainerDto(
+                    p.Trainer.Id,
+                    p.Trainer.PassportNumber,
+                    p.Trainer.LastName,
+                    p.Trainer.FirstName,
+                    p.Trainer.Patronymic,
+                    p.Trainer.Gender,
+                    p.Trainer.DateOfBirth,
+                    new SpecializationDto(
+                        p.Trainer.Specialization.Id,
+                        p.Trainer.Specialization.Name),
+                    p.Trainer.WorkYears),
+                p.TrainDay,
+                p.HallName,
+                p.IsTrial
+                ))
+            .ToList();
+
+        logger.LogInformation("Получено персональных тренировок клиента с Id {Id}: {Count}",id,result.Count);
+
+        return Task.FromResult(result);
     }
 }

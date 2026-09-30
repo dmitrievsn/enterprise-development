@@ -1,4 +1,4 @@
-using FitnessClub.Application.Contracts;
+using FitnessClub.Application.Contracts.Trainers;
 using FitnessClub.Application.Contracts.Specializations;
 using FitnessClub.Domain.Data;
 using FitnessClub.Domain.Entities;
@@ -9,11 +9,7 @@ namespace FitnessClub.Application.Services;
 /// <summary>
 /// Cервис для работы со специализациями
 /// </summary>
-public class SpecializationService(ILogger<SpecializationService> logger):
-    IApplicationService<
-    SpecializationDto,
-    SpecializationCreateUpdateDto,
-    int>
+public class SpecializationService(ILogger<SpecializationService> logger): ISpecializationService
 {
     public Task<SpecializationDto> Create(SpecializationCreateUpdateDto dto)
     {
@@ -118,5 +114,39 @@ public class SpecializationService(ILogger<SpecializationService> logger):
         logger.LogInformation("Специализация с Id: {Id} удалена",id);
 
         return Task.FromResult(true);
+    }
+
+    public Task<IList<TrainerDto>> GetTrainers(int id)
+    {
+        logger.LogInformation("Получение тренеров по специализации с Id: {Id}",id);
+
+        var specialization = FitnessClubData.Specializations.FirstOrDefault(x => x.Id==id);
+
+        if (specialization is null)
+        {
+            logger.LogWarning("Специализация c Id: {Id} не найдена",id);
+
+            throw new KeyNotFoundException($"Специализация с Id: {id} не найдена");
+        }
+
+        IList<TrainerDto> result = FitnessClubData.Trainers.Where(p => p.Specialization.Id==id)
+            .Select(p =>new TrainerDto
+            (
+                p.Id,
+                p.PassportNumber,
+                p.LastName,
+                p.FirstName,
+                p.Patronymic,
+                p.Gender,
+                p.DateOfBirth,
+                new SpecializationDto(
+                    p.Specialization.Id,
+                    p.Specialization.Name),
+                p.WorkYears))
+            .ToList();
+
+        logger.LogInformation("Получено тренеров по специализации с Id {Id}: {Count}",id,result.Count);
+
+        return Task.FromResult(result);
     }
 }
