@@ -8,9 +8,24 @@ public interface IApplicationService<TDto, TCreateUpdateDto, TKey>
     where TCreateUpdateDto : class
     where TKey : struct
 {
-    public Task<TDto> Create(TCreateUpdateDto dto);
-    public Task<TDto?> Get(TKey id);
-    public Task<IList<TDto>> GetAll();
-    public Task<TDto> Update(TCreateUpdateDto dto, TKey id);
-    public Task<bool> Delete(TKey id);
+    /// <summary>
+    /// Создаёт новый элемент
+    /// </summary>
+    TDto Create(TCreateUpdateDto dto);
+    /// <summary>
+    /// Получает элемент по идентификатору
+    /// </summary>
+    TDto? Get(TKey id);
+    /// <summary>
+    /// Получает все элементы
+    /// </summary>
+    IList<TDto> GetAll();
+    /// <summary>
+    /// Обновляет элемент по идентификатору
+    /// </summary>
+    TDto Update(TCreateUpdateDto dto, TKey id);
+    /// <summary>
+    /// Удаляет элемент по идентификатору
+    /// </summary>
+    bool Delete(TKey id);
 }

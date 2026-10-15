@@ -11,5 +11,8 @@ public interface IClientService:
     ClientCreateUpdateDto,
     int>
 {
-    public Task<IList<PersonalTrainingSessionDto>> GetPersonalTrainingSessions(int id);
+    /// <summary>
+    /// Получает персональные тренировки клиента
+    /// </summary>
+    IList<PersonalTrainingSessionDto> GetPersonalTrainingSessions(int id);
 }

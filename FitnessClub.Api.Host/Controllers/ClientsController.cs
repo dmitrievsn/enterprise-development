@@ -7,8 +7,6 @@ namespace FitnessClub.Api.Host.Controllers;
 /// <summary>
 /// Контроллер для работы с клиентами
 /// </summary>
-[ApiController]
-[Route("api/[controller]")]
 public class ClientsController(
     IClientService service,
     ILogger<ClientsController> logger)
@@ -21,21 +19,26 @@ public class ClientsController(
     /// Получить персональные тренировки клиента
     /// </summary>
     [HttpGet("{id}/sessions")]
-    public async Task<ActionResult<IList<PersonalTrainingSessionDto>>> GetPersonalTrainingSessions(int id)
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public ActionResult<IList<PersonalTrainingSessionDto>> GetPersonalTrainingSessions(int id)
     {
-        logger.LogInformation("Получение тренировок клиента с Id {Id}",id);
-
         try
         {
-            var result = await service.GetPersonalTrainingSessions(id);
-
+            logger.LogInformation("Получение тренировок клиента с Id {Id}",id);
+            var result = service.GetPersonalTrainingSessions(id);
             return Ok(result);
         }
-        catch (KeyNotFoundException)
+        catch (KeyNotFoundException exception)
         {
-            logger.LogWarning("Клиент с Id {Id} не найден",id);
-
+            logger.LogWarning(exception,"Клиент с Id {Id} не найден",id);
             return NotFound();
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception,"Ошибка при получении тренировок клиента с Id {Id}",id);
+            return StatusCode(StatusCodes.Status500InternalServerError);
         }
     }
 }

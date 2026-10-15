@@ -1,6 +1,6 @@
 namespace FitnessClub.Tests;
 
-using FitnessClub.Domain.Data;
+using FitnessClub.Infrastructure.Data;
 
 /// <summary>
 /// Юнит-тесты для фитнес-клуба

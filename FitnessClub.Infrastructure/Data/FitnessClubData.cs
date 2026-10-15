@@ -1,7 +1,7 @@
 using FitnessClub.Domain.Entities;
 using FitnessClub.Domain.Shared.Enums;
 
-namespace FitnessClub.Domain.Data;
+namespace FitnessClub.Infrastructure.Data;
 
 /// <summary>
 /// Тестовые данные фитнес-клуба

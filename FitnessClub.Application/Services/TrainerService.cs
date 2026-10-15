@@ -2,7 +2,7 @@ using FitnessClub.Application.Contracts.Clients;
 using FitnessClub.Application.Contracts.PersonalTrainingSessions;
 using FitnessClub.Application.Contracts.Trainers;
 using FitnessClub.Application.Contracts.Specializations;
-using FitnessClub.Domain.Data;
+using FitnessClub.Domain.Repositories;
 using FitnessClub.Domain.Entities;
 using Microsoft.Extensions.Logging;
 
@@ -11,26 +11,25 @@ namespace FitnessClub.Application.Services;
 /// <summary>
 /// Cервис для работы с тренерами
 /// </summary>
-public class TrainerService(ILogger<TrainerService> logger): ITrainerService
+public class TrainerService(
+    IRepository<Trainer, int> trainerRepository,
+    IRepository<Specialization, int> specializationRepository,
+    IRepository<PersonalTrainingSession, int> sessionRepository,
+    ILogger<TrainerService> logger): ITrainerService
 {
-    public Task<TrainerDto> Create(TrainerCreateUpdateDto dto)
+    /// <inheritdoc/>
+    public TrainerDto Create(TrainerCreateUpdateDto dto)
     {
         logger.LogInformation("Создание тренера");
-
-        var specialization = FitnessClubData.Specializations.FirstOrDefault(x => x.Id == dto.SpecializationId);
-
+        var specialization = specializationRepository.Get(dto.SpecializationId);
         if (specialization is null)
         {
             logger.LogWarning("Специализация c Id: {Id} не найдена",dto.SpecializationId);
-
             throw new KeyNotFoundException($"Специализация с Id: {dto.SpecializationId} не найдена");
         }
-
-        var newId = FitnessClubData.Trainers.Count==0?1:FitnessClubData.Trainers.Max(x => x.Id) + 1;
-
         var trainer = new Trainer
         {
-            Id = newId,
+            Id = 0,
             PassportNumber = dto.PassportNumber,
             LastName = dto.LastName,
             FirstName = dto.FirstName,
@@ -40,9 +39,7 @@ public class TrainerService(ILogger<TrainerService> logger): ITrainerService
             Specialization = specialization,
             WorkYears = dto.WorkYears
         };
-
-        FitnessClubData.Trainers.Add(trainer);
-
+        trainerRepository.Add(trainer);
         var result = new TrainerDto(
             trainer.Id,
             trainer.PassportNumber,
@@ -56,25 +53,19 @@ public class TrainerService(ILogger<TrainerService> logger): ITrainerService
                 trainer.Specialization.Name),
             trainer.WorkYears
         );
-
         logger.LogInformation("Id созданного тренера: {Id}",trainer.Id);
-
-        return Task.FromResult(result);
+        return result;
     }
-
-    public Task<TrainerDto?> Get(int id)
+    /// <inheritdoc/>
+    public TrainerDto? Get(int id)
     {
         logger.LogInformation("Получение тренера c Id: {Id}",id);
-
-        var trainer = FitnessClubData.Trainers.FirstOrDefault(x => x.Id==id);
-
+        var trainer = trainerRepository.Get(id);
         if (trainer is null)
         {
             logger.LogWarning("Тренер c Id: {Id} не найден",id);
-
-            return Task.FromResult<TrainerDto?>(null);
+            return null;
         }
-
         var result = new TrainerDto(
             trainer.Id,
             trainer.PassportNumber,
@@ -88,17 +79,14 @@ public class TrainerService(ILogger<TrainerService> logger): ITrainerService
                 trainer.Specialization.Name),
             trainer.WorkYears         
         );
-
         logger.LogInformation("Тренер c Id: {Id} найден",id);
-
-        return Task.FromResult<TrainerDto?>(result);
+        return result;
     }
-
-    public Task<IList<TrainerDto>> GetAll()
+    /// <inheritdoc/>
+    public IList<TrainerDto> GetAll()
     {
         logger.LogInformation("Получение списка тренеров");
-
-        IList<TrainerDto> result = FitnessClubData.Trainers
+        var result = trainerRepository.GetAll()
             .Select(trainer=>new TrainerDto
             (
                 trainer.Id,
@@ -113,34 +101,25 @@ public class TrainerService(ILogger<TrainerService> logger): ITrainerService
                     trainer.Specialization.Name),
                 trainer.WorkYears ))     
             .ToList();
-
         logger.LogInformation("Получено тренеров: {Count}",result.Count);
-
-        return Task.FromResult(result);
+        return result;
     }
-
-    public Task<TrainerDto> Update(TrainerCreateUpdateDto dto, int id)
+    /// <inheritdoc/>
+    public TrainerDto Update(TrainerCreateUpdateDto dto, int id)
     {
         logger.LogInformation("Обновление тренера с Id: {Id}",id);
-
-        var trainer = FitnessClubData.Trainers.FirstOrDefault(x => x.Id==id);
-
+        var trainer = trainerRepository.Get(id);
         if (trainer is null)
         {
             logger.LogWarning("Тренер c Id: {Id} не найден",id);
-
             throw new KeyNotFoundException($"Тренер с Id: {id} не найден");
         }
-
-        var specialization = FitnessClubData.Specializations.FirstOrDefault(x => x.Id == dto.SpecializationId);
-
+        var specialization = specializationRepository.Get(dto.SpecializationId);
         if (specialization is null)
         {
             logger.LogWarning("Специализация c Id: {Id} не найдена",dto.SpecializationId);
-
             throw new KeyNotFoundException($"Специализация с Id: {dto.SpecializationId} не найдена");
         }
-
         trainer.PassportNumber = dto.PassportNumber;
         trainer.LastName = dto.LastName;
         trainer.FirstName = dto.FirstName;
@@ -149,7 +128,7 @@ public class TrainerService(ILogger<TrainerService> logger): ITrainerService
         trainer.DateOfBirth = dto.DateOfBirth;
         trainer.Specialization = specialization;
         trainer.WorkYears = dto.WorkYears;
-
+        trainerRepository.Update(trainer);
         var result= new TrainerDto
         (
             trainer.Id,
@@ -163,56 +142,45 @@ public class TrainerService(ILogger<TrainerService> logger): ITrainerService
                 trainer.Specialization.Id,
                 trainer.Specialization.Name),
             trainer.WorkYears );
-
         logger.LogInformation("Тренер с Id: {Id} обновлен",id);
-
-        return Task.FromResult(result);
+        return result;
     }
-
-    public Task<bool> Delete(int id)
+    /// <inheritdoc/>
+    public bool Delete(int id)
     {
         logger.LogInformation("Удаление тренера с Id: {Id}",id);
-
-        var trainer = FitnessClubData.Trainers.FirstOrDefault(x => x.Id==id);
-
+        var trainer = trainerRepository.Get(id);
         if (trainer is null)
         {
             logger.LogWarning("Тренер c Id: {Id} не найден",id);
-
-            return Task.FromResult(false);
+            return false;
         }
-        var hasPersonalTrainingSessions = FitnessClubData.PersonalTrainingSessions.Any(x => x.Trainer.Id == id);
-
+        var hasPersonalTrainingSessions = sessionRepository.GetAll().Any(x => x.Trainer.Id == id);
         if (hasPersonalTrainingSessions)
         {
             logger.LogWarning(
                 "Тренер с Id: {Id} не может быть удален, у него есть персональные тренировки",
                 id);
-
-            return Task.FromResult(false);
+            return false;
         }
-
-        FitnessClubData.Trainers.Remove(trainer);
-
-        logger.LogInformation("Тренер с Id: {Id} удален",id);
-
-        return Task.FromResult(true);
+        var result = trainerRepository.Delete(id);
+        if (result)
+        {
+            logger.LogInformation("Тренер с Id: {Id} удалён",id);
+        }
+        return result;
     }
-
-    public Task<IList<PersonalTrainingSessionDto>> GetPersonalTrainingSessions(int id)
+    /// <inheritdoc/>
+    public IList<PersonalTrainingSessionDto> GetPersonalTrainingSessions(int id)
     {
         logger.LogInformation("Получение персональных тренировок тренера с Id: {Id}",id);
-
-        var trainer = FitnessClubData.Trainers.FirstOrDefault(x => x.Id==id);
-
+        var trainer = trainerRepository.Get(id);
         if (trainer is null)
         {
             logger.LogWarning("Тренер c Id: {Id} не найден",id);
-
             throw new KeyNotFoundException($"Тренер с Id: {id} не найден");
         }
-
-        IList<PersonalTrainingSessionDto> result = FitnessClubData.PersonalTrainingSessions.Where(p => p.Trainer.Id==id)
+        var result = sessionRepository.GetAll().Where(p => p.Trainer.Id==id)
             .Select(p =>new PersonalTrainingSessionDto
             (
                 p.Id,
@@ -244,9 +212,7 @@ public class TrainerService(ILogger<TrainerService> logger): ITrainerService
                 p.IsTrial
                 ))
             .ToList();
-
         logger.LogInformation("Получено персональных тренировок тренера с Id {Id}: {Count}",id,result.Count);
-
-        return Task.FromResult(result);
+        return result;
     }
 }

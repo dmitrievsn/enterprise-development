@@ -11,5 +11,8 @@ public interface ISpecializationService:
     SpecializationCreateUpdateDto,
     int>
 {
-    public Task<IList<TrainerDto>> GetTrainers(int id);
+    /// <summary>
+    /// Получает тренеров выбранной специализации
+    /// </summary>
+    IList<TrainerDto> GetTrainers(int id);
 }

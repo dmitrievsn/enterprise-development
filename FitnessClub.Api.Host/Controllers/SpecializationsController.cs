@@ -7,8 +7,6 @@ namespace FitnessClub.Api.Host.Controllers;
 /// <summary>
 /// Контроллер для работы со специализациями
 /// </summary>
-[ApiController]
-[Route("api/[controller]")]
 public class SpecializationsController(
     ISpecializationService service,
     ILogger<SpecializationsController> logger)
@@ -21,21 +19,26 @@ public class SpecializationsController(
     /// Получить тренеров выбранной специализации
     /// </summary>
     [HttpGet("{id}/trainers")]
-    public async Task<ActionResult<IList<TrainerDto>>> GetTrainers(int id)
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public ActionResult<IList<TrainerDto>> GetTrainers(int id)
     {
-        logger.LogInformation("Получение тренеров специализации с Id {Id}",id);
-
         try
         {
-            var result = await service.GetTrainers(id);
-
+            logger.LogInformation("Получение тренеров специализации с Id {Id}",id);
+            var result = service.GetTrainers(id);
             return Ok(result);
         }
-        catch (KeyNotFoundException)
+        catch (KeyNotFoundException exception)
         {
-            logger.LogWarning("Специализация с Id {Id} не найдена",id);
-
+            logger.LogWarning(exception,"Специализация с Id {Id} не найдена",id);
             return NotFound();
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception,"Ошибка при получении тренеров специализации с Id {Id}",id);
+            return StatusCode(StatusCodes.Status500InternalServerError);
         }
     }
 }

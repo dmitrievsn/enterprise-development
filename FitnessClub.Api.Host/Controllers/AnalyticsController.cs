@@ -20,84 +20,114 @@ public class AnalyticsController(
     /// Получает информацию о всех тренерах, стаж работы которых не менее 5 лет
     /// </summary>
     [HttpGet("experienced-trainers")]
-    public async Task<ActionResult<IList<TrainerDto>>> GetTrainersWithFiveOrMoreYearsOfExperience()
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public ActionResult<IList<TrainerDto>> GetTrainersWithFiveOrMoreYearsOfExperience()
     {
-        logger.LogInformation("Получение тренеров со стажем не менее 5 лет");
-
-        var result = await service.GetTrainersWithFiveOrMoreYearsOfExperience();
-
-        logger.LogInformation("Получено тренеров со стажем не менее 5 лет: {Count}",result.Count);
-
-        return Ok(result);
+        try
+        {
+            logger.LogInformation("Получение тренеров со стажем не менее 5 лет");
+            var result = service.GetTrainersWithFiveOrMoreYearsOfExperience();
+            logger.LogInformation("Получено тренеров со стажем не менее 5 лет: {Count}",result.Count);
+            return Ok(result);
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception,"Ошибка при получении тренеров со стажем не менее 5 лет");
+            return StatusCode(StatusCodes.Status500InternalServerError);
+        }
     }
 
     /// <summary>
     /// Проверяет, является ли зал доступным для записи в данный момент
     /// </summary>
     [HttpGet("hall-availability")]
-    public async Task<ActionResult<bool>> CheckHallAvailability(
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public ActionResult<bool> CheckHallAvailability(
         [FromQuery] string hallName,
         [FromQuery] DateTime checkTime)
     {
-        logger.LogInformation(
-            "Проверка, является ли зал {HallName} доступным для записи в {CheckTime}",
-            hallName,
-            checkTime);
-
-        var result = await service.CheckHallAvailability(hallName,checkTime);
-
-        logger.LogInformation(
-            "Доступность зала {HallName} на {CheckTime}: {IsAvailable}",
-            hallName,
-            checkTime,
-            result);
-
-        return Ok(result);
+        try
+        {
+            logger.LogInformation("Проверка, является ли зал {HallName} доступным для записи в {CheckTime}",hallName,checkTime);
+            var result = service.CheckHallAvailability(hallName,checkTime);
+            logger.LogInformation("Доступность зала {HallName} на {CheckTime}: {IsAvailable}",hallName,checkTime,result);
+            return Ok(result);
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception,"Ошибка при проверке доступности зала {HallName} на {CheckTime}",hallName,checkTime);
+            return StatusCode(StatusCodes.Status500InternalServerError);
+        }
     }
 
     /// <summary>
     /// Выводит информацию о клиентах, у которых просрочен абонемент, упорядочена по ФИО
     /// </summary>
     [HttpGet("expired-subscriptions")]
-    public async Task<ActionResult<IList<ClientDto>>> GetClientsWithExpiredSubscription()
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public ActionResult<IList<ClientDto>> GetClientsWithExpiredSubscription()
     {
-        logger.LogInformation("Получение клиентов с просроченным абонементом");
-
-        var result = await service.GetClientsWithExpiredSubscription();
-
-        logger.LogInformation("Получено клиентов с просроченным абонементом: {Count}",result.Count);
-
-        return Ok(result);
+        try
+        {
+            logger.LogInformation("Получение клиентов с просроченным абонементом");
+            var result = service.GetClientsWithExpiredSubscription();
+            logger.LogInformation("Получено клиентов с просроченным абонементом: {Count}",result.Count);
+            return Ok(result);
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception,"Ошибка при получении клиентов с просроченным абонементом");
+            return StatusCode(StatusCodes.Status500InternalServerError);
+        }
     }
 
     /// <summary>
     /// Выводит информацию о занятиях за текущий месяц, проходящих в выбранном зале
     /// </summary>
     [HttpGet("current-month-sessions")]
-    public async Task<ActionResult<IList<PersonalTrainingSessionDto>>> GetSessionsForCurrentMonthInSelectedHall(
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public ActionResult<IList<PersonalTrainingSessionDto>> GetSessionsForCurrentMonthInSelectedHall(
         [FromQuery] string hallName)
     {
-        logger.LogInformation("Получение информации о занятиях за текущий месяц, проходящих в зале {HallName}",hallName);
-
-        var result = await service.GetSessionsForCurrentMonthInSelectedHall(hallName);
-
-        logger.LogInformation("Получено занятий за текущий месяц в зале {HallName}: {Count}",hallName,result.Count);
-
-        return Ok(result);
+        try
+        {
+            logger.LogInformation("Получение информации о занятиях за текущий месяц, проходящих в зале {HallName}",hallName);
+            var result = service.GetSessionsForCurrentMonthInSelectedHall(hallName);
+            logger.LogInformation("Получено занятий за текущий месяц в зале {HallName}: {Count}",hallName,result.Count);
+            return Ok(result);
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception,"Ошибка при получении занятий за текущий месяц в зале {HallName}",hallName);
+            return StatusCode(StatusCodes.Status500InternalServerError);
+        }
     }
 
     /// <summary>
     /// Выводит топ 5 наиболее популярных тренеров
     /// </summary>
     [HttpGet("top-trainers")]
-    public async Task<ActionResult<IList<TrainerDto>>> GetTopFivePopularTrainers()
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public ActionResult<IList<TrainerDto>> GetTopFivePopularTrainers()
     {
-        logger.LogInformation("Получение топ 5 наиболее популярных тренеров");
-
-        var result = await service.GetTopFivePopularTrainers();
-
-        logger.LogInformation("Получено популярных тренеров: {Count}",result.Count);
-
-        return Ok(result);
+        try
+        {
+            logger.LogInformation("Получение топ 5 наиболее популярных тренеров");
+            var result = service.GetTopFivePopularTrainers();
+            logger.LogInformation("Получено популярных тренеров: {Count}",result.Count);
+            return Ok(result);
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception,"Ошибка при получении топ 5 наиболее популярных тренеров");
+            return StatusCode(StatusCodes.Status500InternalServerError);
+        }
     }
 }

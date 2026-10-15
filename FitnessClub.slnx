@@ -4,5 +4,6 @@
   <Project Path="FitnessClub.Application/FitnessClub.Application.csproj" />
   <Project Path="FitnessClub.Domain.Shared/FitnessClub.Domain.Shared.csproj" />
   <Project Path="FitnessClub.Domain/FitnessClub.Domain.csproj" />
+  <Project Path="FitnessClub.Infrastructure/FitnessClub.Infrastructure.csproj" />
   <Project Path="FitnessClub.Tests/FitnessClub.Tests.csproj" />
 </Solution>

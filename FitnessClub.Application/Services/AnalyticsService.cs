@@ -3,7 +3,8 @@ using FitnessClub.Application.Contracts.Clients;
 using FitnessClub.Application.Contracts.Trainers;
 using FitnessClub.Application.Contracts.Specializations;
 using FitnessClub.Application.Contracts.PersonalTrainingSessions;
-using FitnessClub.Domain.Data;
+using FitnessClub.Domain.Entities;
+using FitnessClub.Domain.Repositories;
 using Microsoft.Extensions.Logging;
 
 namespace FitnessClub.Application.Services;
@@ -11,16 +12,18 @@ namespace FitnessClub.Application.Services;
 /// <summary>
 /// Cервис для аналитических запросов
 /// </summary>
-public class AnalyticsService(ILogger<AnalyticsService> logger): IAnalyticsService
+public class AnalyticsService(
+    IRepository<Trainer, int> trainerRepository,
+    IRepository<Client, int> clientRepository,
+    IRepository<PersonalTrainingSession, int> sessionRepository,
+    ILogger<AnalyticsService> logger)
+    : IAnalyticsService
 {
-    /// <summary>
-    /// Получает информацию о всех тренерах, стаж работы которых не менее 5 лет
-    /// </summary>
-    public Task<IList<TrainerDto>> GetTrainersWithFiveOrMoreYearsOfExperience()
+    /// <inheritdoc/>
+    public IList<TrainerDto> GetTrainersWithFiveOrMoreYearsOfExperience()
     {
         logger.LogInformation("Получение тренеров со стажем не менее 5 лет");
-
-        IList<TrainerDto> result = FitnessClubData.Trainers
+        var result = trainerRepository.GetAll()
             .Where(trainer => trainer.WorkYears >= 5)
             .Select(trainer=>new TrainerDto
             (
@@ -36,44 +39,33 @@ public class AnalyticsService(ILogger<AnalyticsService> logger): IAnalyticsServi
                     trainer.Specialization.Name),
                 trainer.WorkYears ))     
             .ToList();
-
         logger.LogInformation("Получено тренеров со стажем не менее 5 лет: {Count}",result.Count);
-
-        return Task.FromResult(result);
+        return result;
     }
-    /// <summary>
-    /// Проверяет, является ли зал доступным для записи в данный момент
-    /// </summary>
-    public Task<bool> CheckHallAvailability(string hallName, DateTime checkTime)
+    /// <inheritdoc/>
+    public bool CheckHallAvailability(string hallName, DateTime checkTime)
     {
         logger.LogInformation(
             "Проверка, является ли зал {hallName} доступным для записи в {checkTime}",
             hallName,
             checkTime);
-
-        var isAvailable = !FitnessClubData.PersonalTrainingSessions
+        var isAvailable = !sessionRepository.GetAll()
             .Any(session =>
                 session.HallName == hallName &&
                 session.TrainDay == checkTime);
-
         logger.LogInformation(
             "Доступность зала {HallName} на {CheckTime}: {IsAvailable}",
             hallName,
             checkTime,
             isAvailable);
-
-        return Task.FromResult(isAvailable);
+        return isAvailable;
     }
-    /// <summary>
-    /// Выводит информацию о клиентах, у которых просрочен абонемент, упорядочена по ФИО
-    /// </summary>
-    public Task<IList<ClientDto>> GetClientsWithExpiredSubscription()
+    /// <inheritdoc/>
+    public IList<ClientDto> GetClientsWithExpiredSubscription()
     {
         logger.LogInformation("Получение клиентов с просроченным абонементом");
-
         var today = DateOnly.FromDateTime(DateTime.Today);
-
-        IList<ClientDto> result = FitnessClubData.Clients
+        var result = clientRepository.GetAll()
             .Where(client => client.EndSub < today)
             .OrderBy(client => client.LastName)
             .ThenBy(client => client.FirstName)
@@ -91,21 +83,15 @@ public class AnalyticsService(ILogger<AnalyticsService> logger): IAnalyticsServi
                 client.StartSub,
                 client.EndSub))
             .ToList();
-
         logger.LogInformation("Получено клиентов с просроченным абонементом: {Count}",result.Count);
-
-        return Task.FromResult(result);
+        return result;
     }
-    /// <summary>
-    /// Выводит информацию о занятиях за текущий месяц, проходящих в выбранном зале
-    /// </summary>
-    public Task<IList<PersonalTrainingSessionDto>> GetSessionsForCurrentMonthInSelectedHall(string hallName)
+    /// <inheritdoc/>
+    public IList<PersonalTrainingSessionDto> GetSessionsForCurrentMonthInSelectedHall(string hallName)
     {
         logger.LogInformation("Получение информации о занятиях за текущий месяц, проходящих в зале {hallName}",hallName);
-        
         var today = DateTime.Today;
-
-        IList<PersonalTrainingSessionDto> result = FitnessClubData.PersonalTrainingSessions
+        var result = sessionRepository.GetAll()
             .Where(session =>
                 session.HallName == hallName &&
                 session.TrainDay.Year == today.Year &&
@@ -141,27 +127,22 @@ public class AnalyticsService(ILogger<AnalyticsService> logger): IAnalyticsServi
                 p.IsTrial
                 ))
             .ToList();
-
         logger.LogInformation("Получено занятий за текущий месяц в зале {HallName}: {Count}",hallName,result.Count);
-
-        return Task.FromResult(result);
+        return result;
     }
-    /// <summary>
-    /// Выводит топ 5 наиболее популярных тренеров
-    /// </summary>
-    public Task<IList<TrainerDto>> GetTopFivePopularTrainers()
+    /// <inheritdoc/>
+    public IList<TrainerDto> GetTopFivePopularTrainers()
     {
         logger.LogInformation("Получение топ 5 наиболее популярных тренеров");
-
-        var trainerIds = FitnessClubData.PersonalTrainingSessions
+        var trainerIds = sessionRepository.GetAll()
             .GroupBy(session => session.Trainer.Id)
             .OrderByDescending(group => group.Count())
             .Take(5)
             .Select(group => group.Key)
             .ToList();
-
-        IList<TrainerDto> trainers = trainerIds
-            .Select(id => FitnessClubData.Trainers
+        var allTrainers = trainerRepository.GetAll();
+        var trainers = trainerIds
+            .Select(id => allTrainers
                 .First(trainer => trainer.Id == id))
             .Select(trainer=>new TrainerDto
             (
@@ -177,9 +158,7 @@ public class AnalyticsService(ILogger<AnalyticsService> logger): IAnalyticsServi
                     trainer.Specialization.Name),
                 trainer.WorkYears ))   
             .ToList();
-
         logger.LogInformation("Получено популярных тренеров: {Count}",trainers.Count);
-
-        return Task.FromResult(trainers);
+        return trainers;
     }
 }

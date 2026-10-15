@@ -7,8 +7,6 @@ namespace FitnessClub.Api.Host.Controllers;
 /// <summary>
 /// Контроллер для работы с персональными тренировками
 /// </summary>
-[ApiController]
-[Route("api/[controller]")]
 public class PersonalTrainingSessionsController(
     IApplicationService<
         PersonalTrainingSessionDto,
@@ -18,6 +16,4 @@ public class PersonalTrainingSessionsController(
     : CrudControllerBase<
         PersonalTrainingSessionDto,
         PersonalTrainingSessionCreateUpdateDto,
-        int>(service, logger)
-{
-}
+        int>(service, logger);
