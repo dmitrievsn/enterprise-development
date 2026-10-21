@@ -1,7 +1,6 @@
 using FitnessClub.Application.Contracts;
 using FitnessClub.Application.Contracts.Clients;
 using FitnessClub.Application.Contracts.Trainers;
-using FitnessClub.Application.Contracts.Specializations;
 using FitnessClub.Application.Contracts.PersonalTrainingSessions;
 using FitnessClub.Domain.Entities;
 using FitnessClub.Domain.Repositories;
@@ -34,9 +33,7 @@ public class AnalyticsService(
                 trainer.Patronymic,
                 trainer.Gender,
                 trainer.DateOfBirth,
-                new SpecializationDto(
-                    trainer.Specialization.Id,
-                    trainer.Specialization.Name),
+                trainer.Specialization.Id,
                 trainer.WorkYears ))     
             .ToList();
         logger.LogInformation("Получено тренеров со стажем не менее 5 лет: {Count}",result.Count);
@@ -49,6 +46,12 @@ public class AnalyticsService(
             "Проверка, является ли зал {hallName} доступным для записи в {checkTime}",
             hallName,
             checkTime);
+        var sessions = sessionRepository.GetAll();
+        if (!sessions.Any(session => session.HallName == hallName))
+        {
+            logger.LogWarning("Зал {HallName} не существует",hallName);
+            throw new ArgumentException($"Зал {hallName} не существует");
+        }
         var isAvailable = !sessionRepository.GetAll()
             .Any(session =>
                 session.HallName == hallName &&
@@ -99,29 +102,8 @@ public class AnalyticsService(
             .Select(p =>new PersonalTrainingSessionDto
             (
                 p.Id,
-                new ClientDto(
-                    p.Client.Id,
-                    p.Client.PassportNumber,
-                    p.Client.LastName,
-                    p.Client.FirstName,
-                    p.Client.Patronymic,
-                    p.Client.Gender,
-                    p.Client.DateOfBirth,
-                    p.Client.PhoneNumber,
-                    p.Client.StartSub,
-                    p.Client.EndSub),
-                new TrainerDto(
-                    p.Trainer.Id,
-                    p.Trainer.PassportNumber,
-                    p.Trainer.LastName,
-                    p.Trainer.FirstName,
-                    p.Trainer.Patronymic,
-                    p.Trainer.Gender,
-                    p.Trainer.DateOfBirth,
-                    new SpecializationDto(
-                        p.Trainer.Specialization.Id,
-                        p.Trainer.Specialization.Name),
-                    p.Trainer.WorkYears),
+                p.Client.Id,
+                p.Trainer.Id,
                 p.TrainDay,
                 p.HallName,
                 p.IsTrial
@@ -153,9 +135,7 @@ public class AnalyticsService(
                 trainer.Patronymic,
                 trainer.Gender,
                 trainer.DateOfBirth,
-                new SpecializationDto(
-                    trainer.Specialization.Id,
-                    trainer.Specialization.Name),
+                trainer.Specialization.Id,
                 trainer.WorkYears ))   
             .ToList();
         logger.LogInformation("Получено популярных тренеров: {Count}",trainers.Count);

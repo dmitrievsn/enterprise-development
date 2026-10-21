@@ -56,6 +56,11 @@ public class AnalyticsController(
             logger.LogInformation("Доступность зала {HallName} на {CheckTime}: {IsAvailable}",hallName,checkTime,result);
             return Ok(result);
         }
+        catch (ArgumentException exception)
+        {
+            logger.LogWarning(exception,"Некорректные данные при проверке доступности зала");
+            return BadRequest(exception.Message);
+        }
         catch (Exception exception)
         {
             logger.LogError(exception,"Ошибка при проверке доступности зала {HallName} на {CheckTime}",hallName,checkTime);

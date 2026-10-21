@@ -1,7 +1,5 @@
-using FitnessClub.Application.Contracts.Clients;
 using FitnessClub.Application.Contracts.PersonalTrainingSessions;
 using FitnessClub.Application.Contracts.Trainers;
-using FitnessClub.Application.Contracts.Specializations;
 using FitnessClub.Domain.Repositories;
 using FitnessClub.Domain.Entities;
 using Microsoft.Extensions.Logging;
@@ -48,9 +46,7 @@ public class TrainerService(
             trainer.Patronymic,
             trainer.Gender,
             trainer.DateOfBirth,
-            new SpecializationDto(
-                trainer.Specialization.Id,
-                trainer.Specialization.Name),
+            trainer.Specialization.Id,
             trainer.WorkYears
         );
         logger.LogInformation("Id созданного тренера: {Id}",trainer.Id);
@@ -74,9 +70,7 @@ public class TrainerService(
             trainer.Patronymic,
             trainer.Gender,
             trainer.DateOfBirth,
-            new SpecializationDto(
-                trainer.Specialization.Id,
-                trainer.Specialization.Name),
+            trainer.Specialization.Id,
             trainer.WorkYears         
         );
         logger.LogInformation("Тренер c Id: {Id} найден",id);
@@ -96,9 +90,7 @@ public class TrainerService(
                 trainer.Patronymic,
                 trainer.Gender,
                 trainer.DateOfBirth,
-                new SpecializationDto(
-                    trainer.Specialization.Id,
-                    trainer.Specialization.Name),
+                trainer.Specialization.Id,
                 trainer.WorkYears ))     
             .ToList();
         logger.LogInformation("Получено тренеров: {Count}",result.Count);
@@ -138,9 +130,7 @@ public class TrainerService(
             trainer.Patronymic,
             trainer.Gender,
             trainer.DateOfBirth,
-            new SpecializationDto(
-                trainer.Specialization.Id,
-                trainer.Specialization.Name),
+            trainer.Specialization.Id,
             trainer.WorkYears );
         logger.LogInformation("Тренер с Id: {Id} обновлен",id);
         return result;
@@ -184,29 +174,8 @@ public class TrainerService(
             .Select(p =>new PersonalTrainingSessionDto
             (
                 p.Id,
-                new ClientDto(
-                    p.Client.Id,
-                    p.Client.PassportNumber,
-                    p.Client.LastName,
-                    p.Client.FirstName,
-                    p.Client.Patronymic,
-                    p.Client.Gender,
-                    p.Client.DateOfBirth,
-                    p.Client.PhoneNumber,
-                    p.Client.StartSub,
-                    p.Client.EndSub),
-                new TrainerDto(
-                    p.Trainer.Id,
-                    p.Trainer.PassportNumber,
-                    p.Trainer.LastName,
-                    p.Trainer.FirstName,
-                    p.Trainer.Patronymic,
-                    p.Trainer.Gender,
-                    p.Trainer.DateOfBirth,
-                    new SpecializationDto(
-                        p.Trainer.Specialization.Id,
-                        p.Trainer.Specialization.Name),
-                    p.Trainer.WorkYears),
+                p.Client.Id,
+                p.Trainer.Id,
                 p.TrainDay,
                 p.HallName,
                 p.IsTrial

@@ -1,7 +1,5 @@
 using FitnessClub.Application.Contracts.Clients;
 using FitnessClub.Application.Contracts.PersonalTrainingSessions;
-using FitnessClub.Application.Contracts.Trainers;
-using FitnessClub.Application.Contracts.Specializations;
 using FitnessClub.Domain.Repositories;
 using FitnessClub.Domain.Entities;
 using Microsoft.Extensions.Logging;
@@ -21,6 +19,10 @@ public class ClientService(
     public ClientDto Create(ClientCreateUpdateDto dto)
     {
         logger.LogInformation("Создание клиента");
+        if (dto.StartSub >= dto.EndSub)
+        {
+            throw new ArgumentException("Дата начала подписки должна быть раньше даты окончания подписки");
+        }
         var client = new Client
         {
             Id = 0,
@@ -106,6 +108,10 @@ public class ClientService(
             logger.LogWarning("Клиент c Id: {Id} не найден",id);
             throw new KeyNotFoundException($"Клиент с Id: {id} не найден");
         }
+        if (dto.StartSub >= dto.EndSub)
+        {
+            throw new ArgumentException("Дата начала подписки должна быть раньше даты окончания подписки");
+        }
         client.PassportNumber = dto.PassportNumber;
         client.LastName = dto.LastName;
         client.FirstName = dto.FirstName;
@@ -169,29 +175,8 @@ public class ClientService(
             .Select(p =>new PersonalTrainingSessionDto
             (
                 p.Id,
-                new ClientDto(
-                    p.Client.Id,
-                    p.Client.PassportNumber,
-                    p.Client.LastName,
-                    p.Client.FirstName,
-                    p.Client.Patronymic,
-                    p.Client.Gender,
-                    p.Client.DateOfBirth,
-                    p.Client.PhoneNumber,
-                    p.Client.StartSub,
-                    p.Client.EndSub),
-                new TrainerDto(
-                    p.Trainer.Id,
-                    p.Trainer.PassportNumber,
-                    p.Trainer.LastName,
-                    p.Trainer.FirstName,
-                    p.Trainer.Patronymic,
-                    p.Trainer.Gender,
-                    p.Trainer.DateOfBirth,
-                    new SpecializationDto(
-                        p.Trainer.Specialization.Id,
-                        p.Trainer.Specialization.Name),
-                    p.Trainer.WorkYears),
+                p.Client.Id,
+                p.Trainer.Id,
                 p.TrainDay,
                 p.HallName,
                 p.IsTrial

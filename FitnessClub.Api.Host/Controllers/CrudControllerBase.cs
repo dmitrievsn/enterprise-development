@@ -85,6 +85,11 @@ public abstract class CrudControllerBase<TDto, TCreateUpdateDto, TKey>(
             logger.LogWarning(exception,"Не найдена связанная сущность при создании элемента типа {DtoType}",typeof(TDto).Name);
             return NotFound();
         }
+        catch (ArgumentException exception)
+        {
+            logger.LogWarning(exception,"Некорректные входные данные при создании элемента типа {Type}",typeof(TDto).Name);
+            return BadRequest(exception.Message);
+        }
         catch (Exception exception)
         {
             logger.LogError(exception,"Ошибка при создании элемента типа {DtoType}",typeof(TDto).Name);
@@ -112,6 +117,11 @@ public abstract class CrudControllerBase<TDto, TCreateUpdateDto, TKey>(
         {
             logger.LogWarning(exception,"Элемент типа {DtoType} с Id {Id} или связанная сущность не найдены",typeof(TDto).Name,id);
             return NotFound();
+        }
+        catch (ArgumentException exception)
+        {
+            logger.LogWarning(exception,"Некорректные входные данные при обновлении элемента типа {Type}",typeof(TDto).Name);
+            return BadRequest(exception.Message);
         }
         catch (Exception exception)
         {

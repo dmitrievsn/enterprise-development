@@ -13,7 +13,7 @@ namespace FitnessClub.Application.Contracts.Trainers;
 /// <param name="Patronymic">Отчество тренера</param>
 /// <param name="Gender">Пол тренера</param>
 /// <param name="DateOfBirth">День рождения тренера</param>
-/// <param name="Specialization">Специализация тренера</param>
+/// <param name="SpecializationId">id специализации тренера</param>
 /// <param name="WorkYears">Стаж работы тренера в годах</param>
 public record TrainerDto(
     int Id,
@@ -23,5 +23,5 @@ public record TrainerDto(
     string? Patronymic,
     Gender Gender,
     DateOnly DateOfBirth,
-    SpecializationDto Specialization,
+    int SpecializationId,
     int WorkYears);

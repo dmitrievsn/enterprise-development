@@ -1,7 +1,4 @@
 using FitnessClub.Application.Contracts;
-using FitnessClub.Application.Contracts.Clients;
-using FitnessClub.Application.Contracts.Trainers;
-using FitnessClub.Application.Contracts.Specializations;
 using FitnessClub.Application.Contracts.PersonalTrainingSessions;
 using FitnessClub.Domain.Repositories;
 using FitnessClub.Domain.Entities;
@@ -50,8 +47,8 @@ public class PersonalTrainingSessionService(
         sessionRepository.Add(personalTrainingSession);
         var result = new PersonalTrainingSessionDto(
             personalTrainingSession.Id,
-            ToClientDto(client),
-            ToTrainerDto(trainer),
+            client.Id,
+            trainer.Id,
             personalTrainingSession.TrainDay,
             personalTrainingSession.HallName,
             personalTrainingSession.IsTrial);
@@ -70,8 +67,8 @@ public class PersonalTrainingSessionService(
         }
         var result = new PersonalTrainingSessionDto(
             personalTrainingSession.Id,
-            ToClientDto(personalTrainingSession.Client),
-            ToTrainerDto(personalTrainingSession.Trainer),
+            personalTrainingSession.Client.Id,
+            personalTrainingSession.Trainer.Id,
             personalTrainingSession.TrainDay,
             personalTrainingSession.HallName,
             personalTrainingSession.IsTrial);
@@ -86,8 +83,8 @@ public class PersonalTrainingSessionService(
             .Select(session=>new PersonalTrainingSessionDto
             (
                 session.Id,
-                ToClientDto(session.Client),
-                ToTrainerDto(session.Trainer),
+                session.Client.Id,
+                session.Trainer.Id,
                 session.TrainDay,
                 session.HallName,
                 session.IsTrial))
@@ -125,8 +122,8 @@ public class PersonalTrainingSessionService(
         sessionRepository.Update(personalTrainingSession);
         var result = new PersonalTrainingSessionDto(
             personalTrainingSession.Id,
-            ToClientDto(personalTrainingSession.Client),
-            ToTrainerDto(personalTrainingSession.Trainer),
+            personalTrainingSession.Client.Id,
+            personalTrainingSession.Trainer.Id,
             personalTrainingSession.TrainDay,
             personalTrainingSession.HallName,
             personalTrainingSession.IsTrial);
@@ -149,36 +146,5 @@ public class PersonalTrainingSessionService(
             logger.LogInformation("Персональная тренировка с Id: {Id} удалена",id);
         }
         return result;
-    }
-
-    private static ClientDto ToClientDto(Client client)
-    {
-        return new ClientDto(
-            client.Id,
-            client.PassportNumber,
-            client.LastName,
-            client.FirstName,
-            client.Patronymic,
-            client.Gender,
-            client.DateOfBirth,
-            client.PhoneNumber,
-            client.StartSub,
-            client.EndSub);
-    }
-
-    private static TrainerDto ToTrainerDto(Trainer trainer)
-    {
-        return new TrainerDto(
-            trainer.Id,
-            trainer.PassportNumber,
-            trainer.LastName,
-            trainer.FirstName,
-            trainer.Patronymic,
-            trainer.Gender,
-            trainer.DateOfBirth,
-            new SpecializationDto(
-                trainer.Specialization.Id,
-                trainer.Specialization.Name),
-            trainer.WorkYears);
     }
 }

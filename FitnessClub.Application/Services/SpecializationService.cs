@@ -111,9 +111,7 @@ public class SpecializationService(IRepository<Specialization, int> specializati
                 p.Patronymic,
                 p.Gender,
                 p.DateOfBirth,
-                new SpecializationDto(
-                    p.Specialization.Id,
-                    p.Specialization.Name),
+                p.Specialization.Id,
                 p.WorkYears))
             .ToList();
         logger.LogInformation("Получено тренеров по специализации с Id {Id}: {Count}",id,result.Count);
