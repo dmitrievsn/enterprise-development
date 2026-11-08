@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Aspire.Microsoft.EntityFrameworkCore.SqlServer" Version="13.6.4" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.12" />
     <PackageReference Include="Scalar.AspNetCore" Version="2.18.0" />
   </ItemGroup>
@@ -16,6 +17,8 @@
     <ProjectReference Include="..\FitnessClub.Application\FitnessClub.Application.csproj" />
     <ProjectReference Include="..\FitnessClub.Application.Contracts\FitnessClub.Application.Contracts.csproj" />
     <ProjectReference Include="..\FitnessClub.Infrastructure\FitnessClub.Infrastructure.csproj" />
+    <ProjectReference Include="..\FitnessClub.ServiceDefaults\FitnessClub.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\FitnessClub.Infrastructure.Ef\FitnessClub.Infrastructure.Ef.csproj" />
   </ItemGroup>
 
 </Project>
